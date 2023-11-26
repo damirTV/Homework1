@@ -2,7 +2,7 @@
 // then press Enter. You can now see whitespace characters in your code.
 public class Homework1 {
     public static void main(String[] args) {
-        System.out.println("+++Задание №1+++");
+        System.out.println("\n+++Задание №1+++");
         ///Дана строка
         String name = "     ПЕтРов Олег Иванович     ";
         //Необходимо
@@ -55,7 +55,15 @@ public class Homework1 {
                 System.out.println("Проверьте давление в шинах");
             }
         }
-        System.out.println("\n+++Задание №3+++");
 
+        System.out.println("\n+++Задание №3+++");
+        //Работа на самостоятельное изучение методов.
+        //Заменить в строке все 'this is' на 'those are', получить индекс (число) второй буквы 'o' в строке
+        //Распечатать полученный индекс
+        String simply = "this is simply. This is my favorite song.";
+        simply = simply.replace("this is", "those are").toLowerCase();
+        int index;
+        index = simply.indexOf("o", simply.indexOf("o")+1) ;
+        System.out.println("Индекс второй буквы 'o': " + index);
     }
 }
