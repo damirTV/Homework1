@@ -88,14 +88,14 @@ public class Homework1 {
         //Расход компании считается как умножение себестоимости на количество проданных кг + миллион рублей
         //Прибыль до налогов считается как: доход - расход
         //Налоги считаются так:
-        // прибыль до налогов больше 2_000_000, облагается ставкой 13%
-        // прибыль до налогов больше 1_000_000 до 2_000_000, облагается ставкой 10%
-        // прибыль до налогов меньше 1_000_000, облагается ставкой 8%
+        // прибыль до налогов больше 2_000_000 (не включительно), облагается ставкой 13%
+        // прибыль до налогов от 1_000_001 (включительно) до 2_000_000 (включительно), облагается ставкой 10%
+        // прибыль до налогов меньше или равно 1_000_000, облагается ставкой 8%
         //пример расчета налогов для прибыли до налогов 2_500_000:
         //1_000_000 - налог 80_000 - по ставке 8%
-        //1_000_000 - налог 100_000 - по ставке 10%
+        //999_999 - налог 99_999.9 - по ставке 10%
         //500_000 - 65_000 - по ставке 13%
-        //Итоговый налог: 80_000 + 100_000 + 65_000 = 245_000
+        //Итоговый налог: 80_000 + 99_999.9 + 65_000 = 249_999.9
         //Прибыль после налогов: прибыль до налогов - налог.
 
         //Необходимо создать универсальную систему расчетов прибыли после налогов,
@@ -105,11 +105,93 @@ public class Homework1 {
         //Колбасы 2000кг
         //Ветчины 8511кг
         //Шейки 6988кг
+        String typeProduct1 = "Колбаса";
+        int weightProduct1 = 2000;
+        String typeProduct2 = "Ветчина";
+        int weightProduct2 = 8511;
+        String typeProduct3 = "Шейка";
+        int weightProduct3 = 6988;
 
-        System.out.println(ProfitCalc(10, 20));
-
+        System.out.println("Продаем товары:");
+        System.out.println(typeProduct1 + ": " + weightProduct1 + " кг.");
+        System.out.println(typeProduct2 + ": " + weightProduct2 + " кг.");
+        System.out.println(typeProduct3 + ": " + weightProduct3 + " кг.");
+        System.out.println("Прибыль после налогов: " + FinanceCalc(weightProduct1, typeProduct1, weightProduct2, typeProduct2, weightProduct3, typeProduct3));
     }
-    private static int ProfitCalc ( int costProduct, int weightProduct){
-        return costProduct + weightProduct;
+    private static float FinanceCalc (int weightProduct1, String typeProduct1, int weightProduct2, String typeProduct2, int weightProduct3, String typeProduct3) {
+        int priceProduct1 = PriceProduct(typeProduct1); // Получаем цену первого типа продукта
+        int priceProduct2 = PriceProduct(typeProduct2); // Получаем цену второго типа продукта
+        int priceProduct3 = PriceProduct(typeProduct3); // Получаем цену третьего типа продукта
+        // Расчет суммарного дохода по всем продуктам
+        int revenueProducts = RevenueProduct(priceProduct1, weightProduct1) + RevenueProduct(priceProduct2, weightProduct2) + RevenueProduct(priceProduct3, weightProduct3);
+        // Расчет суммарного расхода по всем продуктам
+        int fixCost = 1_000_000; // Фиксированная стоимость прочих расходов
+        int expensesProducts = ExpensesProduct(typeProduct1, weightProduct1) + ExpensesProduct(typeProduct2, weightProduct2) + ExpensesProduct(typeProduct3, weightProduct3) + fixCost;
+        // Расчет прибыли до налогов
+        int profitBeforeTax = ProfitBeforeTax(revenueProducts, expensesProducts);
+        // Расчет прибыли после налогов
+        float profitAfterTaxTax = ProfitAfterTax(profitBeforeTax);
+        return profitAfterTaxTax;
+    }
+    private static int PriceProduct (String typeProduct) { // Подсчет цены продукта
+        int cost1 = 800; // Цена для колбасы
+        int cost2 = 350; // Цена для ветчины
+        int cost3 = 500; // Цена для шейки
+        if (typeProduct.equals("Колбаса")) {
+            return cost1;
+        } else if (typeProduct.equals("Ветчина")) {
+            return cost2;
+        } else if (typeProduct.equals("Шейка")) {
+            return cost3;
+        } else return -1;
+    }
+    private static int RevenueProduct ( int priceProduct, int weightProduct) { // Подсчет дохода
+        return priceProduct * weightProduct;
+    }
+    private static int ExpensesProduct ( String typeProduct, int weightProduct) { // Подсчет расхода
+        int costSausage1 = 412; // Себестоимость колбасы в диапазоне 1-999 кг.
+        int costSausage2 = 408; // Себестоимость колбасы в диапазоне 1000-1999 кг.
+        int costSausage3 = 404; // Себестоимость колбасы от 2000 кг.
+        int costHam1 = 275; // Себестоимость ветчины
+        int costNeck1 = 311; // Себестоимость шейки в диапазоне 1-499 кг.
+        int costNeck2 = 299; // Себестоимость шейки от 500 кг.
+        if (!typeProduct.equals("Колбаса") && !typeProduct.equals("Ветчина") && !typeProduct.equals("Шейка")) {
+            return -1; // Ошибка при неизвестном типе продуктов
+        }
+        if (weightProduct <=0) {
+            return -2; // Ошибка при весе продукта меньше или равным 0
+        }
+        if (typeProduct.equals("Колбаса")) { // Подсчет расхода Колбасы
+            if (weightProduct >0 && weightProduct < 1000) {
+                return costSausage1 * weightProduct;
+            } else if (weightProduct >= 1000 && weightProduct < 2000) {
+                return costSausage2 * weightProduct;
+            } else {
+                return costSausage3 * weightProduct;
+                }
+            } else if (typeProduct.equals("Ветчина")) { // Подсчет расхода Ветчины
+            return costHam1 * weightProduct;
+        } else { // Подсчет расхода Шейки
+            if (weightProduct < 500) {
+                return costNeck1 * weightProduct;
+            } else {
+                return costNeck2 * weightProduct;
+            }
+        }
+    }
+    private static int ProfitBeforeTax (int revenueProduct, int expensesProduct) { // Подсчет прибыли до налогов
+        return revenueProduct - expensesProduct;
+    }
+    private static float ProfitAfterTax (int profitBeforeTax) { // Подсчет прибыли после налогов
+        float tax1 = 0.08F; // прибыль до налогов меньше или равно 1_000_000, облагается ставкой 8%
+        float tax2 = 0.10F; // прибыль до налогов больше 1_000_000 до 2_000_000 (включительно), облагается ставкой 10%
+        float tax3 = 0.13F; // прибыль до налогов больше 2_000_000, облагается ставкой 13%
+        if (profitBeforeTax <= 1_000_000) {
+            return profitBeforeTax - (profitBeforeTax * tax1);
+        } else if (profitBeforeTax > 1_000_000 && profitBeforeTax < 2_000_000) {
+            return profitBeforeTax - ((1_000_000 * tax1) + (profitBeforeTax - 1_000_000)*tax2);
+        } else {
+            return profitBeforeTax - ((1_000_000 * tax1) + (999_999 * tax2) + ((profitBeforeTax - 2_000_000)*tax3));
+        }
     }
 }
