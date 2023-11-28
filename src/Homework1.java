@@ -116,7 +116,7 @@ public class Homework1 {
         System.out.println(typeProduct1 + ": " + weightProduct1 + " кг.");
         System.out.println(typeProduct2 + ": " + weightProduct2 + " кг.");
         System.out.println(typeProduct3 + ": " + weightProduct3 + " кг.");
-        System.out.println("Прибыль после налогов: " + FinanceCalc(weightProduct1, typeProduct1, weightProduct2, typeProduct2, weightProduct3, typeProduct3));
+        System.out.println("Прибыль после налогов: " + FinanceCalc(weightProduct1, typeProduct1, weightProduct2, typeProduct2, weightProduct3, typeProduct3) + " руб.");
     }
     private static float FinanceCalc (int weightProduct1, String typeProduct1, int weightProduct2, String typeProduct2, int weightProduct3, String typeProduct3) {
         int priceProduct1 = PriceProduct(typeProduct1); // Получаем цену первого типа продукта
